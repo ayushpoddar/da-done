@@ -1,0 +1,3 @@
+a[data-da-done]::after {
+  content: " ✅";
+}
