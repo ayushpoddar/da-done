@@ -1,12 +1,12 @@
 # Da Done
 
-Chrome extension (MV3). Mark URLs as done; links to done URLs get a ✅ on every page.
+Chrome extension (MV3). Mark URLs as done; links to done URLs get a green highlight on every page.
 
 ## Layout
 - `manifest.json`: at repo root. Repo root = extension root ("Load unpacked" on it).
 - `src/normalizeUrl.js`: URL cleaning. Used for both save and compare.
 - `src/background.js`: toolbar button toggle, right-click link toggle, toolbar badge.
-- `src/content.js` + `src/content.css`: tags done links with `data-da-done`. CSS adds ✅.
+- `src/content.js` + `src/content.css`: tags done links with `data-da-done`, shows hover tooltip. CSS adds green highlight.
 - `src/icons/`: PNG icons, 16/32/48/128.
 - `tests/`: Node tests.
 
@@ -22,9 +22,10 @@ Chrome extension (MV3). Mark URLs as done; links to done URLs get a ✅ on every
 - **Context menu is created in `onInstalled`.** After editing `background.js`, reload the extension in `chrome://extensions`. After content script edits, also reload open tabs.
 - **`tabs` permission** is needed to read `tab.url` for the badge.
 - **Link scan** rescans all `a[href]` on DOM changes (debounced 300ms). Ignores in-place `href` edits and iframes.
+- **Icon is grey on purpose.** Green is for the done badge only; a green icon hides it.
 - **Icons:** ImageMagick's SVG renderer drops strokes (no checkmark). Generate with draw primitives:
   ```sh
-  magick -size 512x512 xc:none -fill '#1a7f37' -draw 'roundrectangle 16,16 496,496 112,112' \
+  magick -size 512x512 xc:none -fill '#6e7781' -draw 'roundrectangle 16,16 496,496 112,112' \
     -fill none -stroke white -strokewidth 64 -draw 'stroke-linecap round stroke-linejoin round polyline 136,264 224,352 384,168' /tmp/daDoneIcon.png
   for size in 16 32 48 128; do magick /tmp/daDoneIcon.png -resize ${size}x${size} src/icons/icon${size}.png; done
   ```
@@ -32,3 +33,8 @@ Chrome extension (MV3). Mark URLs as done; links to done URLs get a ✅ on every
 
 ## Out of scope (user said no)
 Sync, export/import, management page, keyboard shortcut.
+
+## Done-link look
+- Solid green background `#9be9a8` + dark green text `#0a3d1c`, both `!important` to beat site styles. Text color forced so it stays readable on dark sites.
+- Tooltip: one shared `#da-done-tooltip` div, `position: fixed`, shown instantly via delegated `mouseover`. Not native `title` (user rejected: too slow). Hides on mouse leave and any scroll.
+- Tooltip CSS starts with `all: initial` to shield from site styles, so `[hidden]` needs its own `display: none` rule.

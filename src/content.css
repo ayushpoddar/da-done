@@ -1,3 +1,30 @@
-a[data-da-done]::after {
-  content: " ✅";
+a[data-da-done] {
+  background-color: #9be9a8 !important;
+  color: #0a3d1c !important;
+  border-radius: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+#da-done-tooltip {
+  all: initial;
+  position: fixed;
+  z-index: 2147483647;
+  transform: translateY(-100%);
+  pointer-events: none;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #1a7f37;
+  color: #fff;
+  font: 12px/1.4 system-ui, sans-serif;
+  white-space: nowrap;
+}
+
+#da-done-tooltip[data-below] {
+  transform: none;
+}
+
+/* "all: initial" overrides the browser's [hidden] rule */
+#da-done-tooltip[hidden] {
+  display: none;
 }
